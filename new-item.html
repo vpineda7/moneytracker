@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  </head>
+  <body>
+
+	<div class = "container">
+		<hr>
+		<h1>Agregar un nuevo item a Google Sheets - Gastos</h1>
+		<hr> 
+
+		<form action = "https://script.google.com/macros/s/AKfycbxP7_Ikaq0vvfLz6dYMPVEv6kpojDVCwa8n_8Cql7yDIugzTu0/exec" method="POST" id="myFormId">
+				<div class="form-group">
+					<label for="Fecha">Fecha</label>
+					<input type="date" class="form-control" name="date" id="date">
+				</div>
+
+				<!-- <div class="form-group"> -->
+					<!-- <label for="Categoria">Categoria</label> -->
+					<!-- <input class="form-control" name="categoria" id="categoria"> -->
+				<!-- </div> -->
+				<div class="dropdown">
+				  <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Categoria
+				  </button>
+				  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="dropdown"  role="menu" >
+				  </div>
+				</div>
+	
+				<div class="form-group">
+					<label for="$">Monto</label>
+					<input type="money" class="form-control" name="monto" id="monto">
+				</div>
+	
+				<div class="form-group">
+					<label for="Comentario1">Comentario1</label>
+					<input class="form-control" name="comentario1">
+				</div>
+	
+				<div class="form-group">
+					<label for="Comentario2">Comentario2</label>
+					<input class="form-control" name="comentario2">
+				</div>
+	
+				<div class="form-group">
+					<label for="Yes/No">Compartido</label>
+					<input class="form-control" name="compartido">
+				</div>
+	
+
+
+				<button type="submit" class="btn btn-primary" id="boton1">Submit</button>
+
+		</form>
+		<div class="toast" id="myToast" style="margin:auto; width:50%; top:0" data-delay="2000">
+			<div class="toast-header">
+				<small>1 sec. ago</small>
+				<button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="toast-body">
+				<div>Success</div>
+			</div>
+		</div>	
+	</div>
+	
+	<script>	
+		$(document).ready(function(){
+			var date = new Date();
+			var day = ("0" + date.getDate()).slice(-2);
+			var month = ("0" + (date.getMonth() + 1)).slice(-2);
+			var today =  date.getFullYear() + "-" + (month) + "-" + (day);
+			//console.log(today);
+			$('#date').val(today);	
+			$('#dropdownMenuButton').focus();
+			var categorias = ["agrÍcola",	"bebemundo",	"bom bom",	"buffalo",	"burgerking",	"campero",	"cancha",	"chamba",	"chinawok",	"cinemark",	"cinepolis",	"cocina de maría",	"credomatic",	"curacaco",	"cuscatlan",	"decameron",	"desayuno",	"despensa",	"digicel",	"don pollo",	"entrada a balboa",	"epa",	"farmacia",	"farmacia el paseo",	"floristería",	"freund",	"gaseosa",	"hector",	"jugos",	"kentuky",	"llanteria",	"maquilishuat",	"mc donald",	"metro",	"mr donuts",	"mr logo",	"oh-la-la",	"pizza hut",	"pizza nova",	"planchada",	"pops",	"pricesmart",	"puma",	"pupas",	"rg nieto",	"rosario",	"royal",	"san martin",	"sandy",	"sarita",	"scotia",	"selectos",	"siman",	"st jacks",	"subway",	"taller",	"telecom",	"texaco",	"uca",	"uno",	"utec",	"varios",	"vidri",	"vidrí",	"wallmart",	"wendy"];
+			for(var i = 0; i < categorias.length; i++) {
+				$('#dropdown').append('<a class="dropdown-item" href="#">'+categorias[i].toString()+'</a>');
+			}	
+			
+			$(".dropdown-menu a").click(function(){
+				$(".btn:first-child").text($(this).text());
+				//$(".btn:first-child").val($(this).text());
+				//console.log('clickec on:'+$(this).text());	
+				$('#monto').focus();
+			});
+			
+			
+		});
+		
+		
+		
+		// jQuery ajax form submit example, runs when form is submitted
+		$("#myFormId").submit(function(e) {
+			console.log('se clickeo on submit');
+			e.preventDefault(); // prevent actual form submit
+			var form = $(this);
+			var dataArray = $("#myFormId").serializeArray();
+			console.log(dataArray);
+			var data = {};//ojo! >> se crea un objeto no un array!
+			for (var i = 0; i < dataArray.length; i++){
+				data[dataArray[i]['name']] = dataArray[i]['value'];
+				//console.log(dataArray[i]['name']);
+			}
+			//console.log(data);
+			Object.assign(data, {action: 'addItem', column_nada: '', descripcion_lugar:'', descripcion_lugar:'', total_debito_credito:'', categoria:$('#dropdownMenuButton').text()});//se agrega nuevas propiedadas al objeto
+
+			console.log(data);
+			
+					
+			var url = form.attr('action'); //get submit url [replace url here if desired]
+			$.ajax({
+				url: url, 
+				type: "POST",
+				crossDomain: true,
+				data: data,//JSON.stringify(data),//data.serialize(), // serializes form input 
+				success: function(data){ 	
+					console.log(data); //objeto data devuelto del api 
+					console.log('se envió data');
+					$("#myToast").toast('show');
+					location.reload();
+				}
+			});		
+			
+			//document.getElementById("myFormId").reset();
+			//$("#myFormId")[0].reset()
+		});
+	</script>
+</body>
